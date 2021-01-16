@@ -1,0 +1,88 @@
+{% extends "auctions/layout.html" %}
+{% block head %}
+<style>
+    #link
+    {
+        word-wrap: break-word;
+        width:300px;
+        display:flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        color: black;
+    }
+    #qwe
+    {
+        display:flex;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+        
+    }
+    #qwe a:hover
+    {
+        text-decoration: none;
+    }
+    .item:hover
+    {
+        border: 1px solid rgb(185, 185, 250);
+    }
+    .item
+    {
+        border: 1px solid white;
+        text-decoration: none;
+    }
+    
+</style>
+{% endblock %}
+{% block body %}
+{% if list1 %}
+
+<div style = "text-align:center">
+    <h2>Active Listings</h2>
+</div>
+<hr>
+
+<div id = "qwe">
+    {% for c in list1 %}
+    <div class = "item">
+    <a href = "item/{{c.id}}">
+    <div>
+        <img style = "width: auto;height:300px"class = "img" src="{{c.image}}">
+    </div>
+
+    <div id = "link">
+        <div>
+            <strong>{{c.title|capfirst}}</strong>
+        </div>
+
+            {% if c.description %}
+
+        <div>
+            {{c.description}}
+        </div>
+        
+            {% endif %}
+
+        <div>
+            Current Price :{{c.bid}}$
+        </div>
+        
+        <div>
+            Added on :{{c.date}}
+        </div>
+        
+        <div>
+            Added By: {{c.by}}
+        </div>
+        <hr>
+    </div>
+</a>
+</div>
+    {% endfor %}
+</div>
+{% else %}
+<div style = "text-align:center">
+<h2>No Active Listings Available</h2>
+</div>
+
+{% endif %}
+{% endblock %}

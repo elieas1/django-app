@@ -1,0 +1,90 @@
+{% extends "auctions/layout.html" %}
+{% block head %}
+<style>
+    #link
+    {
+        word-wrap: break-word;
+        width:300px;
+        display:flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        color: black;
+    }
+    #qwe
+    {
+        font-family: 'Times New Roman', Times, serif;
+        font-size:1.1rem;
+        display:flex;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+        
+    }
+    #qwe a:hover
+    {
+        text-decoration: none;
+    }
+    .item:hover
+    {
+        border: 1px solid rgb(185, 185, 250);
+    }
+    .item
+    {
+        border: 1px solid white;
+        text-decoration: none;
+    }
+    
+</style>
+{% endblock %}
+{% block body %}
+    {% if not categ %}
+    <div style = "text-align:center">
+    <h3>Watchlist is currently empty</h3>
+    </div>
+    {% else %}
+    <div id = "qwe">
+        {% for c in categ %}
+        <div class = "item">
+        <a href = "item/{{c.listing_id__id}}">
+        <div>
+            <img style = "width: auto;height:300px"class = "img" src="{{c.listing_id__image}}">
+        </div>
+    
+        <div id = "link">
+            <div>
+                <strong>{{c.listing_id__title|capfirst}}</strong>
+            </div>
+    
+                {% if c.listing_id__description %}
+    
+            <div>
+                {{c.listing_id__description}}
+            </div>
+            
+                {% endif %}
+    
+            <div>
+                Current Price :{{c.listing_id__bid}}$
+            </div>
+            
+            <div>
+                Added on :{{c.listing_id__date}}
+            </div>
+            
+            <div>
+                Added By: {{c.listing_id__by}}
+            </div>
+            <div>
+                {% if c.listing_id__active == "True" %}
+                    Status: Active
+                {% else %}
+                    Status: Closed
+                {% endif %}
+            </div>
+            <hr>
+        </div>
+    </a>
+        </div>
+        {% endfor %}
+    </div></a>
+    {% endif %}
+{% endblock %}

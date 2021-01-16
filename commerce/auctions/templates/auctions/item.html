@@ -1,0 +1,243 @@
+{% extends "auctions/layout.html" %}
+{% block head %}
+<style>
+    .button
+    {
+        margin-top:20px;width:150px;background-color:rgb(13, 48, 243);color:white;border: none
+    }
+    .edit
+    {
+        border:none;
+        cursor: pointer;
+        padding: 0;
+        font-family: arial, sans-serif;
+        color: #069;
+        text-decoration: underline;
+        background: none
+    }
+    .edit:focus
+    {
+        border:none;
+        outline:0;
+    }
+    .whole
+    {
+        display:flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        
+    }
+
+    #wrapperandcomment
+    {
+        text-align:right;
+        display:flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        
+    }
+    #imageandtext
+    {
+        width:1300px;
+        display:flex;
+        flex-direction: row;
+        justify-content: space-around;
+    }
+    .wrapper
+    {
+        text-align:left;
+        display:flex;
+        flex-direction: column;
+    }
+    .img
+    {
+        max-width:600px
+    }
+
+    #bidders
+    {
+        display:flex;
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+
+    .closed
+    {
+        text-align:center
+    }
+    .comment-text
+    {
+        display:flex;
+        flex-direction: column;
+        text-align:left;
+        margin-top:40px;
+        margin-left: 40px
+    }
+    #addcomment
+    {
+        display: flex;
+        flex-direction: row;
+    }
+    #textareaandsave
+    {
+        display:flex;
+        flex-direction: column;
+        padding-left:30px;
+        margin-top:50px
+    }
+    #user
+    {
+        padding-top:30px;
+        width:250px;
+        text-align:center;
+        border:1px solid black;
+    }
+    #commenttext
+    {
+        display:flex;
+        flex-direction: column;
+        justify-content: center;
+        padding:30px;
+        border:1px solid black;
+        margin-left:10px;
+        vertical-align: bottom;
+        font-family: 'Times New Roman', Times, serif;
+        font-size:20px;
+        width:1100px
+    }
+    #commenttexts
+    {
+        display:flex;
+        flex-direction: column;
+    }
+    #userandcomment
+    {
+        display:flex;
+        flex-direction: row;
+    }
+</style>
+{% endblock %}
+{% block body %}
+<div class = "closed">
+{% for c in list %}
+{% if c.active == "False" %}
+<h3 style = "color : red"> This Listing Is Closed. {% if winner.user == user.username %}Congratulations!! You are the winner!!{% else %}{% if winner.user%}The winner is {{winner.user}}{% endif %}{% endif %}</h3>
+{% endif %}
+{% endfor %}
+<hr>
+</div>
+<div class = "whole">
+    <div id="imageandtext">
+        <div style = "text-align:center" id = "imagesrc">
+            <div>
+                {% for c in list %}
+                <h2>{{c.title|capfirst}}</h2>  
+
+                {% if c.active == "True" and user.is_authenticated and c.by != user.username %}
+                    <form method = "POST">
+                {% csrf_token %}
+                {% if watchlist %}
+                <button style = "background-color:rgb(13, 48, 243);color:white;border: none" name = "remove" value = "{{user.username}}">Remove From Watchlist</button>
+                {% else %}
+                <button style= "background-color:rgb(13, 48, 243);color:white;border: none"  name = "watch" value = "{{c.title}}">Add To Watchlist</button>
+                {% endif %}
+                </form>
+                {% endif %}
+
+            </div>
+            <div>                
+                {% if c.image %}
+                    <img class = "img" src="{{c.image}}">
+                {% endif %}
+            </div>
+        </div>
+        <div style = "width:300px" id ="bidding">
+            <h3>Current Price: ${{c.bid}}</h3>
+            <form method = "POST">
+            {% csrf_token %}
+            <input style= "margin-top:40px"autocomplete="off" required = "required" type="number" step="0.01" 
+            {% if c.changed == "True" %} min="{{bid}}" {% else %} min = "{{bid2}}" {% endif %} name = "bid">
+            <br>
+            <button name = "save" value="save" class = "button"{% if c.active == "False" %} disabled="True" style = "background-color: grey;"{% endif %}>Place Bid</button>
+            </form>
+            <h5 style = "margin-top:30px"><strong>Details</strong></h5>
+            {% if c.description %}
+                <p style = "font-size :15px;word-break:break-word">{{c.description}}</p>
+            {% endif %}
+            <li>Listed By: {{c.by}} </li>
+            {% if c.category %}
+            <li>Category: {{c.category}}</li>
+            {% endif %}
+        {% endfor %}
+        </div>
+        <div style = "text-align:left" id = "bidders">
+            <div>
+                <h3>Bidders</h3>
+            </div>
+            <div style = "margin-top:30px;color: rgb(26, 26, 121)">
+                {% if bidders %}
+                {% for c in bidders %}
+                {% if c.user == user.username %}
+                <div style = "color : red"><h5><li>You bid {{c.bid}} $</li></h5></div>
+                {% else %}
+                <div><h5><li>{{c.user}} bid {{c.bid}} $</li></h5></div>
+                {% endif %}
+                {% endfor %}
+                {% else %}
+                No Bidders Yet
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div id ="wrapperandcomment">
+
+        <div class = "wrapper">
+            <div id="textareaandsave">
+                <div id = "textarea">
+                <form method = "POST">
+                {% csrf_token %}
+
+                
+                    <textarea style ="height:100px;width: 1200px" required = "required"
+                        name = "text" placeholder="Enter Comment"></textarea>
+                </div>
+                <div id="addcomment" >
+                    <button style = "background-color:rgb(13, 48, 243);color:white;border: none"
+                    {% for c in list %}{% if c.active == 'False' %} disabled="True" {% endif %}{% endfor %} name = "savecomment" value = "savecomment">Add Comment</button>            
+                </div>
+                </form>
+            </div>
+        </div>
+        <div class = "comment-text">
+            {% if comment %}
+            {% for c in comment %}
+            <div id = "userandcomment">
+                <div id = "user">
+
+                    <div><img src = "data:image/png;base64,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"></div>
+                    <div>{{c.user}}</div>
+                    <div>{{c.date}}</div>
+                    <br>
+
+                </div>
+                <div id = "commenttext">
+                        <p>{{c.comments}}  <small>
+                    {% if c.user == user.username %}
+                    <form method = "POST">
+                        {% csrf_token %}
+                        <button 
+                            class = "edit" {% for c in list %}{% if c.active == "False" %} disabled="True" style = "background-color: grey;"{% endif %}{% endfor %}name = "delete" value = "{{c.comments}}">Delete</button></small></p>
+                    </form>                        
+                    {% endif %}
+                </div>
+
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+    <br>
+</div>
+
+</div>
+{% endblock %}

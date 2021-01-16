@@ -1,0 +1,79 @@
+{% extends "auctions/layout.html" %}
+{% block head %}
+    <style>
+        .create
+        {
+            text-align:center;
+            margin-top:10px;
+            background-color: white;
+        }
+        .cat
+        {
+            text-align:center;
+            margin-top:10px;
+            margin-left:2px;
+            background-color: white;
+            display:flex;
+            justify-content: center;
+        }
+        .field
+        {
+            margin-top:10px;
+            text-align:center;
+            vertical-align: middle;
+            background-color: white;
+        }
+        input,textarea
+        {
+            vertical-align: middle;
+            width:200px;
+            margin-left:50px
+        }
+        .submit
+        {
+            margin-top: 30px;
+            width:150px;
+            background-color:rgb(36, 36, 240);
+            color: white;
+            border: none
+        }
+    </style>
+{% endblock %}
+{% block body %}
+<form action = "createlisting" method = "POST">
+    {% csrf_token %}
+    <div class = "create">
+        <label for = "title">Item Title :</label>
+        <input autocomplete="off" style = "margin-left:45px" type = "text" required = "required" name = "title">
+    </div>
+    <div class = "create">
+        <label for = "bid">Starting Bid :</label>
+        <input autocomplete="off" style = "margin-left:30px" type = "number" step="0.01" required = "required" name = "bid" min = "1">
+    </div>
+    <div class = "create">
+        <label for = "url">Image Url :</label>
+        <input autocomplete="off" style = "margin-left:42px" type = "text" name = "url">
+    </div>
+    <div class = "cat">
+        <label for = "cat">Category :</label>
+        <select required="required" style = "width:200px;margin-left:50px" name= "cat" multiple>
+            <option>Electronics</option>
+            <option>Fashion</option>
+            <option>Furniture</option>
+            <option>Games</option>
+            <option>Home</option>
+            <option>Toys</option>
+        </select>
+    </div>
+    <div class = "field">
+        <label for = "desc">Description :</label>
+        <textarea autocomplete="off" style = "margin-left : 34px" rows = "auto" name= "desc"></textarea>
+    </div>
+    <div class = "create">
+        <input class = "submit" type = "submit">
+    </div>
+    <div class = "create">
+        <input type = "text" name = "user" value = {{user.username}} hidden = "hidden">
+    </div>
+</form>
+{% endblock %}

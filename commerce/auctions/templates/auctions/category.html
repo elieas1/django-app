@@ -1,0 +1,105 @@
+{% extends "auctions/layout.html" %}
+{% block head %}
+<style>
+    #link
+    {
+        word-wrap: break-word;
+        width:300px;
+        display:flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        color: black;
+    }
+    #qwe
+    {
+        font-family: 'Times New Roman', Times, serif;
+        font-size:1.1rem;
+        display:flex;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+        
+    }
+    #qwe a:hover
+    {
+        text-decoration: none;
+    }
+    .item:hover
+    {
+        border: 1px solid rgb(185, 185, 250);
+    }
+    .item
+    {
+        border: 1px solid white;
+        text-decoration: none;
+    }
+    
+</style>
+{% endblock %}
+{% block body %}
+<form style="text-align: center;" action = "{% url 'category' %}" method = "POST">
+    {% csrf_token %}
+
+    <select name = "select" style = "width:200px;height:25px">
+        <option></option>
+        <option>Electronics</option>
+        <option>Fashion</option>
+        <option>Furniture</option>
+        <option>Games</option>
+        <option>Home</option>
+        <option>Toys</option>
+    </select>
+    <input style = "border:none;color:white;background-color:rgb(36, 36, 240)" type = "submit" value = "Search Listings">
+</form>
+<div style="text-align: center;">
+{% if cate %}
+<h2>Category: {{cate}}</h2>
+{% endif %}
+</div>
+    <hr>
+    {% if categ %}
+    <div id = "qwe">
+        {% for c in categ %}
+        <div class = "item">
+        <a href = "item/{{c.id}}">
+        <div>
+            <img style = "width: auto;height:300px"class = "img" src="{{c.image}}">
+        </div>
+    
+        <div id = "link">
+            <div>
+                <strong>{{c.title|capfirst}}</strong>
+            </div>
+    
+                {% if c.description %}
+    
+            <div>
+                {{c.description}}
+            </div>
+            
+                {% endif %}
+    
+            <div>
+                Current Price :{{c.bid}}$
+            </div>
+            
+            <div>
+                Added on :{{c.date}}
+            </div>
+            
+            <div>
+                Added By: {{c.by}}
+            </div>
+            <hr>
+        </div>
+    </a>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div style="text-align: center;">
+    {% if cate %}
+    <h4>No items that match this category</h4>
+    {% endif %}
+    </div>
+    {% endif %}
+{% endblock %}
